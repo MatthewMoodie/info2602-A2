@@ -1,0 +1,57 @@
+{% extends "authenticated-base.html" %}
+{% block title %}My Stats{% endblock %}
+
+{% block subpage_content %}
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4">My Collection Stats</h2>
+    <div class="card shadow-sm p-4 col-lg-8 mx-auto">
+        <div id="myChart" style="width: 100%; height: 400px;"></div>
+    </div>
+</div>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.js"></script>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        Highcharts.chart('myChart', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Pokemon by Type'
+            },
+            xAxis: {
+                categories: {{ labels | tojson }},
+                title: {
+                    text: 'Type'
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '# of Pokemon'
+                },
+                allowDecimals: false
+            },
+            series: [{
+                name: 'Captured Pokemon',
+                data: {{ counts | tojson }},
+                color: '#0d6efd'
+            }],
+            credits: {
+                enabled: false
+            }
+        });
+
+    });
+
+</script>
+
+
+{% endblock %}

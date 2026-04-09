@@ -1,0 +1,128 @@
+{% extends "authenticated-base.html" %}
+{% block title %}Assignment 2{% endblock %}
+
+{% block subpage_content %}
+<style>
+    
+    body {
+        background-color: #f0f4f8;
+        background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+        background-size: 30px 30px;
+    }
+
+    
+    .pokedex-title {
+        color: #ffcb05; 
+        text-shadow: 3px 3px 0px #3c5aa6, -1px -1px 0px #3c5aa6, 3px -1px 0px #3c5aa6, -1px 3px 0px #3c5aa6; 
+        font-weight: 900;
+        letter-spacing: 2px;
+    }
+
+    
+    .card {
+        border: 3px solid #1a202c;
+        border-radius: 1rem;
+        box-shadow: 6px 6px 0px #a0aec0;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background-color: white;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 6px 12px 0px #a0aec0;
+    }
+
+   
+    .btn-pokeball {
+        background-color: #ff3e3e; 
+        color: white !important;
+        border: 3px solid #1a202c;
+        border-radius: 25px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        box-shadow: 0 5px 0px #c53030, inset 0 -3px 0px rgba(0,0,0,0.2);
+        transition: all 0.1s;
+    }
+
+    .btn-pokeball:hover {
+        background-color: #e53e3e;
+    }
+    
+
+    .btn-pokeball:active {
+        transform: translateY(5px);
+        box-shadow: 0 0px 0px #c53030, inset 0 -3px 0px rgba(0,0,0,0.2);
+    }
+    
+
+    .search-fun {
+        border: 3px solid #1a202c;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+    
+</style>
+
+<div class="container pb-5 pt-3">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="display-5 pokedex-title mb-0">Explore Pokedex</h2>
+        <form action="/pokemon" method="GET" class="d-flex" style="width: 300px;">
+            <input type="text" name="q" class="form-control search-fun" placeholder="Search Pokemon...">
+            <button type="submit" class="btn btn-dark ms-2" style="border-radius: 20px; font-weight: bold; border: 3px solid #1a202c;">Search</button>
+        </form>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for p in pokemon_list %}
+        <div class="col">
+            <div class="card h-100 p-3 text-center">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ p.pokemon_id }}.png" class="mx-auto" style="width: 120px;" loading="lazy">
+                <h5 class="card-title text-capitalize fw-bold">{{ p.name }}</h5>
+                <div class="small mb-3 text-muted">
+                    <p class="mb-0"><strong>Weight</strong> <span class="pokemon_weight">{{ "%.1f"|format(p.weight or 0) }}</span></p>
+                    <p class="mb-0"><strong>Height</strong> <span class="pokemon_height">{{ "%.1f"|format(p.height or 0) }}</span></p>
+                </div>
+                <button class="btn btn-pokeball capture-button w-100 mt-auto" 
+                        data-bs-toggle="modal" data-bs-target="#captureModal" 
+                        data-pokemon-id="{{ p.pokemon_id }}" data-pokemon-name="{{ p.name }}">Capture</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="modal" id="captureModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <form action="/mypokemon" method="POST" class="modal-content border-0 shadow-lg rounded-4" style="border: 4px solid #1a202c !important;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title card-title fw-bold fs-3" id="capture-modal-title">Capture</h5>
+            </div>
+            <div class="modal-body py-2">
+                <input type="hidden" name="pokemon_id" id="capture-pokemon-id">
+                <div class="mb-4">
+                    <label class="form-label text-muted fw-bold">Give them a nickname!</label>
+                    <input type="text" class="form-control search-fun" id="nickname" name="name">
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="submit" class="btn btn-pokeball w-100">Confirm Capture</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<script>
+    document.querySelectorAll('.capture-button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('capture-modal-title').textContent = this.dataset.pokemonName;
+            document.getElementById('capture-pokemon-id').value = this.dataset.pokemonId;
+            document.getElementById('nickname').value = "";
+            document.getElementById('nickname').placeholder = this.dataset.pokemonName;
+        });
+    });
+
+</script>
+{% endblock %}

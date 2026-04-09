@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='css/bootstrap.min.css')}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='img/favicon.ico')}}">
+    <script src="{{ url_for('static', path='js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ url_for('static', path='js/jquery-4.0.0.min.js')}}"></script>
+
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+
+    <style>
+
+        body { font-family: 'Fredoka', sans-serif; background-color: #f8f9fa; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Chewy', cursive; letter-spacing: 1px; }
+        .card { border-radius: 1.5rem; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        .btn { border-radius: 0.8rem; font-weight: 600; }
+        {% block inline_styles %} {% endblock %}
+
+    </style>
+</head>
+
+<body>
+    {% block content %}{% endblock %}
+</body>
+
+
+
+</html>

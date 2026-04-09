@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block inline_styles %}
+
+
+<style>
+
+    .login-container { min-height: 100vh; }
+    .login-card { border: none; border-radius: 1rem; overflow: hidden; }
+    .login-image { background: linear-gradient(135deg, #0d6efd, #0dcaf0); display: flex; align-items: center; justify-content: center; color: white; padding: 3rem; }
+    .form-section { padding: 3rem; }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+<div class="container login-container d-flex align-items-center justify-content-center">
+    <div class="card shadow-lg login-card col-lg-10">
+        <div class="row g-0">
+            <div class="col-lg-6 d-none d-lg-flex login-image">
+                <div class="text-center">
+                    <h2 class="mt-4 fw-bold">Welcome Back</h2>
+                    <p class="lead">Sign in to continue to the app</p>
+                </div>
+            </div>
+            <div class="col-lg-6 bg-white">
+                <div class="form-section">
+                    <h1 class="display-6 fw-bold mb-4">Login</h1>
+                    <form action="/login" method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="d-grid mb-3">
+                            <button type="submit" id="submitButton" class="btn btn-primary btn-lg">Sign In</button>
+                        </div>
+                    </form>
+                    <div class="d-grid"><a class="btn btn-secondary btn-lg" href="/signup">Sign Up</a></div>
+                    {% for message in get_flashed_messages(request) %}
+                    <div class="alert alert-{{ message.type }} mt-3" role="alert">{{ message.message }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

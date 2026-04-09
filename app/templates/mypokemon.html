@@ -1,0 +1,111 @@
+{% extends "authenticated-base.html" %}
+{% block title %}My Pokemon{% endblock %}
+{% block subpage_content %}
+
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">My Pokemon</h2>
+        <div style="width: 300px;">
+            <form action="/mypokemon" method="GET" class="d-flex">
+                <input type="text" name="q" class="form-control" placeholder="Search...">
+                <button type="submit" class="btn btn-primary ms-2">Search</button>
+            </form>
+        </div>
+    </div>
+
+
+    
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4" id="pokemon-grid">
+        {% for cp in captured_pokemon %}
+        <div class="col pokemon-card">
+            <div class="card h-100 shadow-sm text-center border-0 p-3">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ cp.pokemon_id }}.png" class="mx-auto" style="width: 120px;">
+                <div class="card-body p-0 mt-2">
+                    <h5 class="card-title fw-bold text-capitalize">{{ cp.nickname }}</h5>
+                    <p class="text-muted small mb-2">{{ cp.species | lower }}</p>
+                    <div class="small mb-3">
+                        <p class="mb-0"><strong>Weight</strong> <span class="pokemon_weight">{{ "%.1f"|format(cp.weight or 0) }}</span></p>
+                        <p class="mb-0"><strong>Height</strong> <span class="pokemon_height">{{ "%.1f"|format(cp.height or 0) }}</span></p>
+                    </div>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-outline-primary btn-sm rename-button" 
+                                data-bs-toggle="modal" data-bs-target="#renameModal" 
+                                data-capture-id="{{ cp.capture_id }}" 
+                                data-current-nickname="{{ cp.nickname }}">Rename</button>
+                        <button class="btn btn-outline-danger btn-sm release-button" 
+                                data-bs-toggle="modal" data-bs-target="#releaseModal" 
+                                data-capture-id="{{ cp.capture_id }}">Release</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+</div>
+
+<div class="modal" id="renameModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <form id="renameForm" class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0"><h5 class="modal-title">Rename</h5></div>
+            <div class="modal-body py-0">
+                <input type="text" class="form-control" name="name" id="rename-input" required>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="submit" class="btn btn-primary">Confirm Rename</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<div class="modal" id="releaseModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <form id="releaseForm" class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0"><h5 class="modal-title">Release</h5></div>
+            <div class="modal-body text-center"><p>Are you sure you want to release this Pokemon?</p></div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Release</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+    let activeId = null;
+    document.querySelectorAll('.rename-button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            activeId = this.dataset.captureId;
+            document.getElementById('rename-input').value = this.dataset.currentNickname;
+        });
+    });
+
+
+    document.querySelectorAll('.release-button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            activeId = this.dataset.captureId;
+        });
+    });
+
+    
+
+    document.getElementById('renameForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        await fetch(`/mypokemon/${activeId}`, { method: 'PUT', body: formData });
+        window.location.reload();
+    };
+    document.getElementById('releaseForm').onsubmit = async (e) => {
+        e.preventDefault();
+        await fetch(`/mypokemon/${activeId}`, { method: 'DELETE' });
+        window.location.reload();
+    };
+</script>
+
+
+{% endblock %}
